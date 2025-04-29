@@ -1,2 +1,5 @@
 # Ignore mac root files.
 .DS_Store
+
+# Ignore local venv
+venv/
