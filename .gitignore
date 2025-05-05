@@ -3,3 +3,4 @@
 
 # Ignore local venv
 venv/
+venv310/
