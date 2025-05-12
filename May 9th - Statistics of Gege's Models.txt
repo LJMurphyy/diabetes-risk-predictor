@@ -41,6 +41,7 @@ Model E
 Model F
 
 * Architecture: 3 layers, 16 neurons
+* Batch size: 128
 * Preprocessing: No outliers, 13 features
 * Loss function: MSE
 * Test loss: 0.0613
@@ -48,6 +49,7 @@ Model F
 
 Model G
 
+* Architecture: 3 layers, 16 neurons
 * Batch size: 64
 * Loss function: Cross Entropy
 * Test loss: 0.3413
