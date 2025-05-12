@@ -4,3 +4,6 @@
 # Ignore local venv
 venv/
 venv310/
+
+# Generated Directories
+kt_dir/
