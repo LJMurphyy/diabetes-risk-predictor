@@ -2,8 +2,10 @@
 .DS_Store
 
 # Ignore local venv
-venv/
-venv310/
+diabetes-venv
 
 # Generated Directories
 kt_dir/
+
+# Ignore generated data
+.python-version
