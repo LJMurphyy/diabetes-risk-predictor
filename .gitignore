@@ -9,3 +9,5 @@ kt_dir/
 
 # Ignore generated data
 .python-version
+
+.ipynb_checkpoints/
