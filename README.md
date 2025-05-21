@@ -58,8 +58,8 @@ The ANN is capable of learning both **linear** and **non-linear** relationships 
 
 We plan to develop a user-facing **web application** for interactive prediction and exploration. Features will include:
 
-- 🌐 Frontend: React + Tailwind UI
-- 🧠 Backend: Flask or Django serving the trained model
+- 🌐 Frontend: XXXXXXXXXXXXXXXXXXXX
+- 🧠 Backend: XXXXXXXXXXXXXXX serving the trained model
 - 📈 Visualizations: Risk factor analysis, model outputs, confidence metrics
 - 📤 User input: Form-based feature selection
 
