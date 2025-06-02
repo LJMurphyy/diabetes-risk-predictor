@@ -88,13 +88,13 @@ To mitigate this imbalance, we found the same dataset, but with negative diabete
 \noindent
 \textbf{Exploratory Data Analysis}:
 
-Before any data cleaning, all model accuracies were roughly around 75%. 
+Before any data cleaning, all model accuracies were roughly around 75\%. 
 We computed the linear correlation using pearson correlation between continuous and continuous pairs and point-biserial correlation between categorical and continuous pairs.  Based on these computations, none of the feature pairs had strong linear correlation.  
 The first attempt of cleaning involved outlier detection and removal.  Using the interquartile range method, we were able to detect outliers for all continuous variables: BMI, Mental Health and Physical Health.  We decided to remove these outliers to avoid the skewed data from disrupting our model performances.  However, we noticed how the data points were almost halved upon removing the outliers, indicating that the outliers must be significant to the model’s predictions. 
 
 Next, we conducted a literature review for all 21 features which confirmed the correlation of all features with diabetes, including the continuous features for which the outliers were removed.  
 
-To reduce the effects of the skewed distribution of the continuous variables, we decided to categorize them into 4-5 classes each based on their value ranges.  This change was the key part of our EDA, after which the model accuracies significantly improved, going upto around 90 percent.  Upon further plotting, the data was significantly less skewed compared to pre-categorization.
+To reduce the effects of the skewed distribution of the continuous variables, we decided to categorize them into 4-5 classes each based on their value ranges.  This change was the key part of our EDA, after which the model accuracies significantly improved, improved to approximately 90\% accuracy.  Upon further plotting, the data was significantly less skewed compared to pre-categorization.
 
 Finally, on our now fully categorical dataset, we decided to identify the most important features using the Chi-Squared coefficient which is used for detecting non-linear dependencies between categorical variables. Based on this, the following features were selected as the most important:  
 
@@ -119,13 +119,13 @@ However, most model performances decreased slightly overall when any of the feat
 
 
 \section{Proposed Methodology}
-All features in this dataset are categorical, meaning they represent qualitative labels, not numerical quantities. Therefore, standardization is not appropriate. For instance, the HighBP feature uses 0 to indicate no high blood pressure and 1 to indicate presence of high blood pressure. Standardizing this would incorrectly imply that 1 > 0 in a numerical sense, which distorts the categorical nature of the data. To handle categorical features correctly, we applied one-hot encoding, which converts values like 0 and 1 into distinct vectors such as [1, 0] and [0, 1].\\ 
+All features in this dataset are categorical, meaning they represent qualitative labels, not numerical quantities. Therefore, standardization is not appropriate. For instance, the HighBP feature uses 0 to indicate no high blood pressure and 1 to indicate presence of high blood pressure. Standardizing this would incorrectly imply that \( 1 > 0 \) in a numerical sense, which distorts the categorical nature of the data. To handle categorical features correctly, we applied one-hot encoding.\\ 
 
 In addition, we bucketed the continuous features BMI, MentHlth, and PhysHlth into discrete classes based on meaningful thresholds. For example, BMI is categorized into five classes (0 through 4). More details on the binning criteria can be found in the final text cell of the notebook. Since artificial neural networks (ANNs) are capable of capturing both linear and non-linear relationships, we fed the entire encoded dataset into the model without additional feature engineering.\\
 
 The model consists of 11 total layers: 1 input layer, 10 hidden layers, and 1 output layer. Each hidden layer contains 30 neurons and uses the ReLU activation function. The output layer uses a sigmoid activation function, suitable for binary classification. L1 and L2 regularization (each set to 0.001) was applied across all layers to reduce overfitting. The SGD optimizer was used with a momentum of 0.9 to accelerate convergence. The ANN achieved high accuracy on the test set, indicating good generalization. The confusion matrix and derived metrics (precision, recall, F1-score) also showed strong performance, confirming that the model effectively captured the relationship between the features and the target variable. The ANN model performed well with the fully one-hot encoded dataset, validating that proper encoding and a well-structured neural network can effectively model complex relationships in categorical health-related data.\\
 
-To better understand the learning behavior of **ANN Model A**, we visualized the model’s training dynamics over 100 epochs.\\
+To better understand the learning behavior of \textbf{ANN Model A}, we visualized the model’s training dynamics over 100 epochs.\\
 
 \begin{figure}[H]
   \includegraphics[width=0.5\textwidth]{training_accuracy_ANN_A.png} % change filename & width as needed
@@ -143,31 +143,34 @@ To better understand the learning behavior of **ANN Model A**, we visualized the
 These trends confirm the model’s learning capacity and generalization ability, though fine-tuning can further improve its performance and reduce training time.\\
 
 \section{Experimental Results and Evaluation}
-This section presents the results of our comparative evaluation of different classification models, including Logistic Regression, several Artificial Neural Network (ANN) architectures, Bayesian Network, and Tree-based models like Random Forest, XGBoost, and LightGBM. Each model was evaluated using consistent metrics: confusion matrix, accuracy, precision, recall, F1 score, and testing time.\\
+This section presents the results of our comparative evaluation of eight different classification models, including Logistic Regression, several Artificial Neural Network (ANN) architectures, a Bayesian Network, and tree-based models such as Random Forest, XGBoost, and LightGBM. Each model was evaluated using consistent performance metrics: confusion matrix, accuracy, precision, recall, F1 score, and testing time.
+
+These represent all of the models we trained and tested during this project. The best-performing model, ANN A, was introduced in the previous section.\\
 
 \noindent
-\textbf{Model 1) Binomial logistic regression}:\\
+\textbf{Binomial logistic regression}:\\
 Binomial logistic regression was applied to a fully categorical dataset (3 to classes) with no need for standardization, binary class labels, and equal class weighting. No outliers were removed prior to modeling. The same optimization techniques as in previous models were used, and four models were tested in total. The best-performing models (a and b) used all 21 features, with Model a employing L2 regularization and the 'lbfgs' solver. Model a achieved the highest accuracy (91.06 percent) and a low AIC (5123.826), while Model b had a nearly identical classification report with a slightly lower AIC (5113.101). Models c and d, which used only 13 features, matched Model a’s accuracy but had higher AIC scores and the highest number of false negatives (753), a critical factor in medical data contexts. These results indicate that including all 21 features was necessary for optimal classification performance.\\
 
 \noindent
-\textbf{Model 2) ANN B:}:\\
+\textbf{ANN B}:\\
 After exploratory data analysis, we implemented a binary classifier for diabetes risk. We split the data 80-20 into train and test sets, and constructed a six-layer feedforward Artificial Neural Network with Tensorflow/Keras. The hidden layers utilized the ReLU activation function, and we tried different L1 and L2 regularization weights to prevent overfitting of the model. The output layer uses the default sigmoid function and binary cross-entropy loss to improve the binary classifier. We implemented a brute-force grid search with five hyperparameters to hyperparameter tune the ANN, an SGD learning rate and momentum, a hidden layer with either 16 or 32 neurons, and L1/L2 regularization. We also ran this over 50 epochs and a batch size of 64.
 This brute force grid search method generalized our six-layer network’s hyperparameters and provided a reproducible model from the root BRFSS features to a tuned diabetes‐risk predictor.\\ 
 
+
 \noindent
-\textbf{Model 4) ANN C and KerasTuner}:\\
+\textbf{ANN C and KerasTuner}:\\
 Implemented a supervised machine learning pipeline to predict diabetes using a feedforward neural network with hyperparameter tuning. The process begins with loading and preprocessing a dataset, where the target variable is extracted and categorical features are one-hot encoded. The data is then split into training and testing sets, followed by standardization using StandardScalar. A custom model-building function is defined using KerasTuner, allowing for dynamic architecture adjustments, including varying the number of layers, units per layer, and learning rate. A RandomSearch tuner is employed to identify the best model configuration by optimizing for validation accuracy. Early stopping is incorporated to prevent overfitting. The best model is re-trained and evaluated on the test set, reporting both accuracy and optimal hyperparameters. Finally, the training history, confusion matrix, and other parameters are visualized to show trends in loss and accuracy over epochs, providing insight into the model's learning behavior and results.\\
 
 \noindent
-\textbf{Model 5) Random Forest}:\\
-We implemented Random Forest using the RandomForestClassifier from scikit-learn. All features were one-hot encoded to handle categorical variables properly. To address the class imbalance in the target variable, we used class\_weight='balanced', which automatically adjusts the weight inversely proportional to class frequencies. The model was trained and validated using 5-fold stratified cross-validation, and performance was evaluated using accuracy, precision, recall, F1 score, and testing time. Finally, the model was retrained on the full training set and tested on the held-out test set to assess generalization.\\
+\textbf{Random Forest}:\\
+We implemented Random Forest using the Random Forest Classifier from scikit-learn. All features were one-hot encoded to handle categorical variables properly. To address the class imbalance in the target variable, we used class\_weight='balanced', which automatically adjusts the weight inversely proportional to class frequencies. The model was trained and validated using 5-fold stratified cross-validation, and performance was evaluated using accuracy, precision, recall, F1 score, and testing time. Finally, the model was retrained on the full training set and tested on the held-out test set to assess generalization.\\
 
 \noindent
-\textbf{Model 6) XGBoost}:\\
+\textbf{XGBoost}:\\
 The XGBoost model was implemented using XGBClassifier. We configured the objective as 'binary\:logistic' for binary classification and used 'logloss' as the evaluation metric. The tree\_method='hist' was selected for faster training on structured data. Because XGBoost does not natively support class\_weight, we manually computed sample weights based on the class distribution and passed them during model fitting. Similar to Random Forest, we performed 5-fold stratified cross-validation to evaluate the model, followed by a final evaluation on the test set. The model's robustness and fast inference make it attractive for structured medical data.\\
 
 \noindent
-\textbf{Model 7) LightGBM}:\\
+\textbf{LightGBM}:\\
 We used the LGBMClassifier to implement the LightGBM model, setting the objective to 'binary'. The parameter class\_weight='balanced' ensured that the model addressed class imbalance effectively. We used 100 estimators and a fixed random\_state=42 for reproducibility. LightGBM’s ability to handle large numbers of features and fast inference made it particularly suitable for our one-hot encoded dataset. As with the other models, evaluation was conducted through 5-fold cross-validation, followed by a final test set evaluation to confirm model performance and generalization.
 
 \vspace{1em}
@@ -238,9 +241,11 @@ We used the LGBMClassifier to implement the LightGBM model, setting the objectiv
 % \label{tab:performance_metrics}
 % \end{table*}
 
+\vspace{3em}
+
+\noindent \textbf{Overall Performance Metrics:}\\
 \begin{table}[H]
 \centering
-\caption{Evaluation metrics and testing time for each model.}
 \label{tab:performance_metrics}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|l|c|c|c|c|c|}
@@ -258,8 +263,183 @@ XGB         & 0.9047 & 0.9054 & 0.9047 & 0.9047 & 1.634 \\
 LGBM        & 0.9067 & 0.9072 & 0.9067 & 0.9067 & 0.630 \\
 \hline
 \end{tabular}
+\caption{Evaluation metrics and testing time for each model.}
 \end{table}
 
+\vspace{1em}
+
+\noindent \textbf{Confusion matrices of the top 4 models:}\\
+\begin{table}[htbp]
+\centering
+\label{tab:conf_matrix_l1}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{} & \textbf{Predicted 0} & \textbf{Predicted 1} \\
+\hline
+\textbf{Actual 0} & 6566 & 524 \\
+\hline
+\textbf{Actual 1} & 744 & 6305 \\
+\hline
+\end{tabular}
+\caption{Confusion Matrix — Logistic Regression (L1)}
+\end{table}
+
+\vspace{1em}
+
+\begin{table}[htbp]
+\centering
+\label{tab:conf_matrix_l2}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{} & \textbf{Predicted 0} & \textbf{Predicted 1} \\
+\hline
+\textbf{Actual 0} & 6566 & 524 \\
+\hline
+\textbf{Actual 1} & 740 & 6309 \\
+\hline
+\end{tabular}
+\caption{Confusion Matrix — Logistic Regression (L2)}
+\end{table}
+
+\vspace{1em}
+
+\begin{table}[htbp]
+\centering
+\label{tab:conf_matrix_ann_a}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{} & \textbf{Predicted 0} & \textbf{Predicted 1} \\
+\hline
+\textbf{Actual 0} & 6446 & 644 \\
+\hline
+\textbf{Actual 1} & 627 & 6422 \\
+\hline
+\end{tabular}
+\caption{Confusion Matrix — ANN A}
+\end{table}
+
+\vspace{1em}
+
+\begin{table}[htbp]
+\centering
+\label{tab:conf_matrix_bn}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{} & \textbf{Predicted 0} & \textbf{Predicted 1} \\
+\hline
+\textbf{Actual 0} & 6570 & 521 \\
+\hline
+\textbf{Actual 1} & 693 & 6354 \\
+\hline
+\end{tabular}
+\caption{Confusion Matrix — Bayesian Network}
+\end{table}
+
+\vspace{1em}
+
+\noindent \textbf{Analysis and Comparison:}\\
+
+\subsection*{Logistic Regression}
+
+\textbf{Pros:}
+\begin{itemize}
+  \item Best overall performance across all metrics (Accuracy, Precision, Recall, F1 Score: 0.9100).
+  \item Fastest inference time (\textless3 ms).
+  \item Transparent and interpretable, making it ideal for regulatory settings.
+  \item High recall (0.91), which contributes to reducing false negatives.
+  \item Low AIC (5113.101) indicates a better-fit model while avoiding unnecessary complexity which prevents overfitting.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+  \item Slightly higher false negative count (FN = 740) compared to ANN A.
+\end{itemize}
+
+\subsection*{ANN Models}
+
+\textbf{Model A:}
+\begin{itemize}
+  \item Lowest false negative count (FN = 627) among all models, which is critical in a medical context.
+  \item Strong F1 score (0.9027) and well-regularized architecture with deep layers.
+  \item Clear trade-off between FN minimization and slightly lower precision.
+  \item Selected as the preferred model because its false negative count is slightly lower than that of Model B, which is especially important for medical applications.
+\end{itemize}
+
+\textbf{Model B:}
+\begin{itemize}
+  \item False negative count (FN = 696), higher than Model A.
+  \item Strong F1 score (0.9105) and well-regularized architecture with deep layers.
+  \item Clear trade-off between FN minimization and slightly lower precision.
+\end{itemize}
+
+\textbf{Grid-Tuned ANN:}
+\begin{itemize}
+  \item High performance (F1 Score: 0.9073, Accuracy: 0.9087).
+  \item Efficient architecture discovered through Keras Tuner, offering a balance between model complexity and performance.
+\end{itemize}
+
+\textbf{Pros:}
+\begin{itemize}
+  \item ANN A minimizes false negatives more effectively than any other model.
+  \item Grid-Tuned ANN is among the top models in terms of accuracy and F1 score.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+  \item Slower inference time ($\sim$9 seconds).
+  \item Less interpretable, which limits practical deployment in critical applications.
+\end{itemize}
+
+\subsection*{Bayesian Network (BN)}
+
+\textbf{Pros:}
+\begin{itemize}
+  \item Uses a reduced set of 13 features while maintaining good performance (F1 Score: 0.8946).
+  \item FN = 693, better than Logistic Regression but higher than ANN A.
+  \item Offers explainability via its graphical structure.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+  \item Slow inference time (7.75 seconds).
+  \item May not generalize well across datasets with different distributions.
+\end{itemize}
+
+\subsection*{Tree-Based Models}
+
+\textbf{Pros:}
+\begin{itemize}
+  \item Strong performance: F1 scores from 0.8981 to 0.9067, close to top models.
+  \item Robust to noise and non-linearity, effective on structured data.
+  \item Feature importance supports model interpretability at a high level.
+  \item Efficient inference: especially LightGBM (0.63s) and XGBoost (1.63s).
+  \item Scalable: well-suited for large datasets and fast training.
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+  \item Less interpretable than linear or probabilistic models.
+  \item Higher false negatives than ANN A and BN.
+  \item Requires tuning to avoid overfitting and ensure optimal results.
+\end{itemize}
+
+\subsection*{Summary of Analysis}
+
+While Logistic Regression (L2) achieved the highest overall scores across all key metrics (Accuracy, Precision, Recall, and F1 Score: 0.9100), it did not minimize false negatives. ANN Model A had the lowest false negative count (627), which is a crucial factor in medical applications where failing to identify positive cases can have serious consequences.
+
+Despite this, Logistic Regression (L2) remains the most suitable model for deployment due to its:
+\begin{itemize}
+  \item Consistently top-tier performance
+  \item Real-time inference speed
+  \item Simplicity and ease of interpretation
+  \item High recall and overall robustness
+\end{itemize}
+
+Given the medical context, where recall and explainability are both important, Logistic Regression (L2) provides a reliable and practical solution. Nonetheless, ANN Model A's ability to reduce false negatives may justify its use in future enhancements or as part of a two-stage pipeline.
 
 
 \section{Conclusion and Discussion}
@@ -273,13 +453,38 @@ Despite these obstacles, the potential impact is significant. A well-validated, 
 
 Our work demonstrates how a thoughtfully designed ML system can support the early detection of diabetes, potentially transforming how individuals and providers approach chronic disease prevention. By aligning machine learning capabilities with healthcare needs, this project lays the groundwork for more intelligent, accessible, and responsive medical technologies.
 
-\section*{GitHub Link and Project Roadmap}
+\section{GitHub Link and Project Roadmap}
 
+\vspace{1em}
+\noindent \textit{The following link is clickable:}
 \begin{center}
-\textit{The following links are clickable in the PDF:} \\[1em]
-\href{https://github.com/LJMurphyy/diabetes-risk-predictor.git}{\textbf{GitHub Repository}} \\[0.5em]
-\href{https://docs.google.com/document/d/1y2SnHe8G0xIHGBpmtqj0W4p5EUc5S9HrJr6mLDhpScE/edit?usp=sharing}{\textbf{Project Roadmap}}
+\href{https://github.com/LJMurphyy/diabetes-risk-predictor.git}{\textbf{GitHub}}
 \end{center}
+
+\noindent \textbf{Project Roadmap:}\\
+Starting this project, our overarching goals included training different supervised models using the CDC Diabetes Dataset to classify whether or not an individual has diabetes given various factors and deploying our best-performing model within an HTML page for the final demo. To achieve this, we created a weekly timeline and milestone roadmap to keep track of our collaborative and individual efforts, which was routinely updated during our bi-weekly meetings (online \& in person). The following section details our project schedule.
+
+\vspace{1em}
+\noindent
+
+\noindent \textbf{Week 1: Getting Started}\\
+First, we created our GitHub repository and analyzed the data to determine any preprocessing necessities. During the exploratory data analysis (EDA), we examined the overall data distribution, outliers per feature, and evaluated dataset metrics (correlation, covariance, etc.). Based on these results, we decided on relevant features that contributed to diabetes prediction and identified a model that best fits the dataset. We were also working with an unequally weighted 3-class dataset at this stage.
+
+\vspace{1em}
+
+\noindent \textbf{Week 2: Feature Selection \& Model Construction}\\
+Based on the EDA results from Week 1, we hypothesized appropriate model types for the classification task based on what we’ve learned in class. This included Logistic Regression, Bayesian Networks, and Artificial Neural Networks (ANN’s). We started conducting literature reviews of selected health and medical research papers to understand clinical risk factors associated with diabetes and all features, regardless of feature selection results. After our Friday meeting, we decided to split up the work by assigning each member to a specific model.
+
+\vspace{1em}
+
+\noindent\textbf{Week 3 to 6: Model Evaluation \& Refinement}\\
+During this time period, each member ran and fine-tuned their models. After the first run-through (week 3), we realized that our unbalanced dataset led to biased results, where every model was classifying all data points as ‘no diabetes’ and having a difficult time generalizing. Because of this, we re-evaluated our dataset choice, and decided to use the alternative, equally weighted binary classification diabetes dataset (5050\_split). The following week (4), model evaluations illustrated significant improvement, as predictions were now based on important patterns within the data instead of class frequency. Other model types were experimented with as well, including Bayesian, Random Forest, and XGBoost classifiers. While conducting EDA of the binary dataset (week 5), we experimented with converting all features to categorical, as only 3 predictors were continuous in the binary classifier dataset. After running evaluations on the newly created fully-categorical dataset for 21 and 13 features, we found that accuracy increased from ~75\% (on the non-categorical dataset) to ~90\% (on the fully-categorical dataset). Achieving these notable results, we moved to writing the final report and creating our demo.
+
+\vspace{1em}
+
+\noindent\textbf{Week 6-7: Finishing Details}\\
+Week 6 included writing the report, building the website, and creating our demo video. Each group member was responsible for writing their 4-5 feature literature review and reporting model methodologies/results. Additionally, two group members completed the website integration, while others wrote the abstract, introduction, conclusion, roadmap, etc. Finally, all group members collaborated to edit/polish the report, create the demo slides, and meet online for the demo recording.
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
